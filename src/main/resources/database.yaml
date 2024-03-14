@@ -1,0 +1,4 @@
+database:
+  url: jdbc:postgresql://localhost:5432/restaurant
+  user: postgres
+  password: 675347198FAKR
