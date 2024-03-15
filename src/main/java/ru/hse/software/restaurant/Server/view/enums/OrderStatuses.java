@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum OrderStatuses {
+
+    INACTIVE("Inactive"),
     ACCEPT("Accept"),
     PREPARE("Prepare"),
     READY("Ready");

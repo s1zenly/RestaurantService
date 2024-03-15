@@ -14,8 +14,10 @@ CREATE TABLE IF NOT EXISTS admins (
 
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
-    date DATE NOT NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status status_enum DEFAULT 'Inactive',
     user_id INT NOT NULL,
+    difficult INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES personalities(id)
 );
 
