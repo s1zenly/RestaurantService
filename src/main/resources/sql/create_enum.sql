@@ -9,5 +9,9 @@ BEGIN
         CREATE TYPE status_enum AS ENUM ('Inactive', 'Accept', 'Prepare', 'Ready');
     END IF;
 
+     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_enum') THEN
+        CREATE TYPE payment_enum AS ENUM ('Paid', 'Unpaid');
+     END IF;
+
 END $$;
 

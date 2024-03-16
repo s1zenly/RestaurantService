@@ -28,6 +28,7 @@ public class OrderService {
         }
 
         order.setDifficult(order.getDifficult() + dish.getDifficult());
+        order.setPrice(order.getPrice() + dish.getPrice());
 
         orderRepository.update(order);
         orderRepository.saveDishInOrder(orderId, dish.getId());
@@ -48,6 +49,7 @@ public class OrderService {
         }
 
         order.setDifficult(order.getDifficult() - dish.getDifficult());
+        order.setPrice(order.getPrice() - dish.getPrice());
 
         orderRepository.update(order);
         orderRepository.deleteDishInOrder(orderId, dish.getId());
@@ -69,7 +71,12 @@ public class OrderService {
                         .mapToInt(Dish::getDifficult)
                         .sum();
 
+        int price = order.getDishes().stream()
+                        .mapToInt(Dish::getPrice)
+                        .sum();
+
         order.setDifficult(difficult);
+        order.setPrice(price);
         order.setStatus(OrderStatuses.ACCEPT);
 
         orderRepository.update(order);
@@ -80,4 +87,5 @@ public class OrderService {
     public Order infoAboutOrder(long orderId) {
         return orderRepository.findById(orderId);
     }
+
 }

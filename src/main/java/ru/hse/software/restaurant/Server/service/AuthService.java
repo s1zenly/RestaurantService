@@ -11,6 +11,8 @@ import ru.hse.software.restaurant.Server.view.repository.AdminRepository;
 import ru.hse.software.restaurant.Server.view.repository.PersonaRepository;
 import ru.hse.software.restaurant.Server.view.repository.UserRepository;
 
+import java.util.Locale;
+
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -19,12 +21,12 @@ public class AuthService {
     private final PersonaRepository personaRepository;
 
     public PersonaDTO verify(String email, String password) {
-        Persona persona = personaRepository.findByEmailAndPassword(email, password);
+        Persona persona = personaRepository.findByEmailAndPassword(email.toLowerCase(), password.toLowerCase());
         return castingToDTO(persona);
     }
 
     public boolean register(String email, String password) {
-        return userRepository.save(email, password);
+        return userRepository.save(email.toLowerCase(), password.toLowerCase());
     }
 
     private PersonaDTO castingToDTO(Persona persona) {

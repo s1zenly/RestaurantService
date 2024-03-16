@@ -38,6 +38,10 @@ public class OrderRepository {
         return null; // запрос к БД на поиск всех заказов
     }
 
+    public List<Order> getAllOrdersByUserId(long userId) {
+        return null; // запрос к БД на поиск всех заказов пользователя
+    }
+
     public boolean existDishInOrder(long orderId, long dishId) {
         return true; // запрос к БД на поиск что в конкретном заказе есть конкретное блюдо
     }

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS personalities (
 );
 
 CREATE TABLE IF NOT EXISTS users (
-
+    money_account INT DEFAULT 0
 ) INHERITS (personalities);
 
 CREATE TABLE IF NOT EXISTS admins (
@@ -16,8 +16,10 @@ CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status status_enum DEFAULT 'Inactive',
+    payment_status payment_enum DEFAULT 'Unpaid',
     user_id INT NOT NULL,
     difficult INT DEFAULT 0,
+    price INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES personalities(id)
 );
 

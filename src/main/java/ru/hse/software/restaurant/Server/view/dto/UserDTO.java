@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class UserDTO extends PersonaDTO{
-
+    private Integer moneyAccount;
 }

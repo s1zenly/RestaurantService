@@ -40,12 +40,16 @@ public class UserController {
 
 
     // Payment Service
-    public Integer paymentOrder(long UserId, Integer amount) {
-        return null;
+    public Integer paymentOrder(long userId, long orderId, int amount) {
+        return paymentService.paidForOrder(userId, orderId, amount);
     }
 
-    public Integer getMoneyAccount(long UserId) {
-        return null;
+    public Integer paymentAllOrder(long userId, int amount) {
+        return paymentService.paidAllOrder(userId, amount);
+    }
+
+    public Integer getMoneyAccount(long userId) {
+        return paymentService.getMoneyAccount(userId);
     }
 
 }
