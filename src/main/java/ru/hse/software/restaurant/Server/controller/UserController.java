@@ -12,6 +12,7 @@ import ru.hse.software.restaurant.Server.view.entity.User;
 import ru.hse.software.restaurant.Server.view.mapper.mapperWithDependency.OrderMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class UserController {
@@ -32,10 +33,18 @@ public class UserController {
     public boolean makeAnOrder(long orderId) {
         return orderService.makeAnOrder(orderId);
     }
-    public OrderDTO getInfoAboutOrder(long UserId) {
-        Order order = orderService.infoAboutOrder(UserId);
+    public OrderDTO getInfoAboutOrder(long orderId) {
+        Order order = orderService.infoAboutOrder(orderId);
 
         return OrderMapper.INSTANCE.toDTO(order);
+    }
+
+    public List<OrderDTO> getInfoAboutOrders(long userId) {
+        List<Order> orders = orderService.infoAboutOrders(userId);
+
+        return orders.stream()
+                .map(OrderMapper.INSTANCE::toDTO)
+                .collect(Collectors.toList());
     }
 
 

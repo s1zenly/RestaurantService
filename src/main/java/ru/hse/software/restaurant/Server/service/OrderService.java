@@ -88,4 +88,8 @@ public class OrderService {
         return orderRepository.findById(orderId);
     }
 
+    public List<Order> infoAboutOrders(long userId) {
+        return orderRepository.getAllOrdersByUserId(userId);
+    }
+
 }
