@@ -1,0 +1,1 @@
+SELECT * FROM admins WHERE email = ? and password = ? LIMIT 1

@@ -8,6 +8,7 @@ import ru.hse.software.restaurant.Server.view.enums.PaymentStatusOrder;
 import ru.hse.software.restaurant.Server.view.repository.OrderRepository;
 import ru.hse.software.restaurant.Server.view.repository.UserRepository;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
 
-    public Integer paidForOrder(long userId, long orderId, int amount) {
+    public Integer paidForOrder(long userId, long orderId, int amount) throws SQLException {
         Order order = orderRepository.findById(orderId);
         User user = (User) userRepository.findById(userId);
         if(order.getStatus() != OrderStatuses.READY) {
@@ -42,7 +43,7 @@ public class PaymentService {
         return remain;
     }
 
-    public Integer paidAllOrder(long userId, int amount) {
+    public Integer paidAllOrder(long userId, int amount) throws SQLException {
         int remain = amount - getMoneyAccount(userId);
         if(remain >= 0) {
             User user = (User) userRepository.findById(userId);
@@ -64,7 +65,7 @@ public class PaymentService {
         return remain;
     }
 
-    public Integer getMoneyAccount(long userId) {
+    public Integer getMoneyAccount(long userId) throws SQLException {
         User user = (User) userRepository.findById(userId);
 
         return user.getMoneyAccount();

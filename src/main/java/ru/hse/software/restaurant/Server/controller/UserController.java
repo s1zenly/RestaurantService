@@ -11,6 +11,7 @@ import ru.hse.software.restaurant.Server.view.entity.Order;
 import ru.hse.software.restaurant.Server.view.entity.User;
 import ru.hse.software.restaurant.Server.view.mapper.mapperWithDependency.OrderMapper;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,15 +50,15 @@ public class UserController {
 
 
     // Payment Service
-    public Integer paymentOrder(long userId, long orderId, int amount) {
+    public Integer paymentOrder(long userId, long orderId, int amount) throws SQLException {
         return paymentService.paidForOrder(userId, orderId, amount);
     }
 
-    public Integer paymentAllOrder(long userId, int amount) {
+    public Integer paymentAllOrder(long userId, int amount) throws SQLException {
         return paymentService.paidAllOrder(userId, amount);
     }
 
-    public Integer getMoneyAccount(long userId) {
+    public Integer getMoneyAccount(long userId) throws SQLException {
         return paymentService.getMoneyAccount(userId);
     }
 

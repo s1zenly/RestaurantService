@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS personalities (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL UNIQUE
 );
@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS users (
 ) INHERITS (personalities);
 
 CREATE TABLE IF NOT EXISTS admins (
-    access_level access_enum NOT NULL
+    access_type access_enum
 ) INHERITS (personalities);
 
 CREATE TABLE IF NOT EXISTS orders (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status status_enum DEFAULT 'Inactive',
     payment_status payment_enum DEFAULT 'Unpaid',
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS orders (
 );
 
 CREATE TABLE IF NOT EXISTS dishes (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     difficult INTEGER NOT NULL,
     price INT NOT NULL

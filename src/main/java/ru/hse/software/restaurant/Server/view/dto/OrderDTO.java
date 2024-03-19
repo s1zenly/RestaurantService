@@ -18,4 +18,5 @@ public class OrderDTO {
     private OrderStatuses status;
     private PaymentStatusOrder statusPayment;
     private List<DishDTO> dishes;
+
 }

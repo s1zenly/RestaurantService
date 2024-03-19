@@ -11,31 +11,28 @@ import ru.hse.software.restaurant.Server.view.repository.AdminRepository;
 import ru.hse.software.restaurant.Server.view.repository.PersonaRepository;
 import ru.hse.software.restaurant.Server.view.repository.UserRepository;
 
+import java.sql.SQLException;
 import java.util.Locale;
 
-@RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final AdminRepository adminRepository;
-    private final PersonaRepository personaRepository;
+    private final UserRepository userRepository = new UserRepository();
+    private final AdminRepository adminRepository = new AdminRepository();
 
-    public PersonaDTO verify(String email, String password) {
-        Persona persona = personaRepository.findByEmailAndPassword(email.toLowerCase(), password.toLowerCase());
-        return castingToDTO(persona);
-    }
+    public PersonaDTO verify(String email, String password) throws SQLException {
+        Persona user = userRepository.findByEmailAndPassword(email.toLowerCase(), password.toLowerCase());
+        Persona admin = adminRepository.findByEmailAndPassword(email.toLowerCase(), password.toLowerCase());
 
-    public boolean register(String email, String password) {
-        return userRepository.save(email.toLowerCase(), password.toLowerCase());
-    }
-
-    private PersonaDTO castingToDTO(Persona persona) {
-        if(persona instanceof User) {
-            return PersonaMapper.INSTANCE.toDTO((User) persona);
-        } else if(persona instanceof Admin) {
-            return PersonaMapper.INSTANCE.toDTO((Admin) persona);
-        } else {
-            return null;
+        if(user != null) {
+            return PersonaMapper.INSTANCE.toDTO((User) user);
+        } else if(admin != null) {
+            return PersonaMapper.INSTANCE.toDTO((Admin) admin);
         }
+
+        return null;
+    }
+
+    public boolean register(String email, String password) throws SQLException {
+        return userRepository.save(email.toLowerCase(), password.toLowerCase());
     }
 }

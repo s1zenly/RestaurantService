@@ -1,0 +1,1 @@
+SELECT dish_id FROM dishes_orders WHERE order_id = ?

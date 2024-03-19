@@ -1,0 +1,1 @@
+INSERT INTO dishes (title, difficult, price) VALUES (?, ?, ?)

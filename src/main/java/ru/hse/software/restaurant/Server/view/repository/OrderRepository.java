@@ -1,8 +1,10 @@
 package ru.hse.software.restaurant.Server.view.repository;
 
+import ru.hse.software.restaurant.Server.view.database.DatabaseConnection;
 import ru.hse.software.restaurant.Server.view.entity.Order;
 import ru.hse.software.restaurant.Server.view.enums.OrderStatuses;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class OrderRepository {
@@ -11,7 +13,10 @@ public class OrderRepository {
     }
 
     public Order findById(long orderId) {
-        return null; // запрос к БД на получение заказа по Id
+
+        Connection connection = DatabaseConnection.getConnection();
+        String filepath = "sql/order/find_by_id";
+        return null;
     }
 
     public void saveDishInOrder(long orderId, long dishId) {

@@ -1,0 +1,1 @@
+UPDATE dishes SET difficult = ?, price = ? WHERE title = ?

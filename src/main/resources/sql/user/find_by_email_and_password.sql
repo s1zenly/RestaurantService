@@ -1,0 +1,1 @@
+SELECT * FROM users WHERE email = ? and password = ? LIMIT 1
