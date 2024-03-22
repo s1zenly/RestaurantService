@@ -1,4 +1,4 @@
-package ru.hse.software.restaurant.Server.view.repository;
+package ru.hse.software.restaurant.Server.view.repository.abstracts;
 
 import ru.hse.software.restaurant.Server.view.entity.Persona;
 

@@ -1,1 +1,0 @@
-SELECT * FROM personalities WHERE email = ? and password = ? LIMIT 1

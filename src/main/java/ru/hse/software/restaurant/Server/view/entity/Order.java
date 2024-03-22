@@ -12,7 +12,7 @@ import java.util.List;
 public class Order {
     private Long id;
     private Timestamp date;
-    private User user;
+    private Long userId;
     private Integer difficult;
     private Integer price;
     private OrderStatuses status;

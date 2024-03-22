@@ -1,0 +1,1 @@
+UPDATE users SET money_account = ? WHERE id = ?

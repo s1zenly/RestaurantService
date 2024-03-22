@@ -2,24 +2,22 @@ package ru.hse.software.restaurant.Server.view.repository;
 
 import ru.hse.software.restaurant.Server.view.database.DatabaseConnection;
 import ru.hse.software.restaurant.Server.view.database.SQLExecutor;
-import ru.hse.software.restaurant.Server.view.entity.Admin;
-import ru.hse.software.restaurant.Server.view.entity.Persona;
 import ru.hse.software.restaurant.Server.view.entity.User;
-import ru.hse.software.restaurant.Server.view.enums.AccessTypes;
+import ru.hse.software.restaurant.Server.view.repository.abstracts.PersonaRepository;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class UserRepository extends PersonaRepository{
+public class UserRepository extends PersonaRepository {
     @Override
     public User findByEmailAndPassword(String email, String password) throws SQLException {
         if(email == null || password == null) {
             return null; // throw
         }
 
-        User user = new User();
+        User user = null;
         Connection connection = DatabaseConnection.getConnection();
         String filepath = "sql/user/find_by_email_and_password.sql";
         Object[] params = {email, password};
@@ -27,11 +25,8 @@ public class UserRepository extends PersonaRepository{
         ResultSet resultSet = SQLExecutor.
                 executeSQLFileWithParamsWithReturn(connection, filepath, params);
 
-        if(!resultSet.next()) {
-            return null;
-        }
-
         while(resultSet.next()) {
+            user = new User();
             user.setId(resultSet.getLong("id"));
             user.setEmail(resultSet.getString("email"));
             user.setPassword(resultSet.getString("password"));
@@ -42,11 +37,37 @@ public class UserRepository extends PersonaRepository{
     }
 
     @Override
-    public Persona findById(Long id) throws SQLException {
-        return null;
+    public User findById(Long id) throws SQLException {
+
+        User user = null;
+        Connection connection = DatabaseConnection.getConnection();
+        String filepath = "sql/user/find_by_id.sql";
+        Object[] params = {id};
+
+        ResultSet resultSet = SQLExecutor.executeSQLFileWithParamsWithReturn
+                (connection, filepath, params);
+
+        while(resultSet.next()) {
+            user = new User();
+            user.setId(resultSet.getLong("id"));
+            user.setEmail(resultSet.getString("email"));
+            user.setPassword(resultSet.getString("password"));
+            user.setMoneyAccount(resultSet.getInt("money_account"));
+        }
+
+        return user;
     }
 
-    public void update(User user) {} // запрос к БД на обновление данных пользователя
+    public void update(User user) throws SQLException {
+        long id = user.getId();
+        int moneyAccount = user.getMoneyAccount();
+
+        Connection connection = DatabaseConnection.getConnection();
+        String filepath = "sql/user/update.sql";
+        Object[] params = {moneyAccount, id};
+
+        SQLExecutor.executeSQLFileWithParamsWithoutReturn(connection, filepath, params);
+    }
     public boolean save(String email, String password) throws SQLException {
         if(findByEmailAndPassword(email, password) != null) {
             return false;

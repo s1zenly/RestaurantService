@@ -21,4 +21,8 @@ public class AdminController {
     public boolean changeDish(String dishTittle, DishDTO dishDTO) throws SQLException {
         return adminService.changeDishInMenu(dishTittle, dishDTO);
     }
+
+    public DishDTO getInfoAboutDish(String dishTitle) throws SQLException {
+        return adminService.getInfo(dishTitle);
+    }
 }

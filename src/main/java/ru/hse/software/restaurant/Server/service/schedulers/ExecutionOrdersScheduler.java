@@ -1,10 +1,10 @@
-package ru.hse.software.restaurant.Server.schedulers;
+package ru.hse.software.restaurant.Server.service.schedulers;
 
-import lombok.RequiredArgsConstructor;
-import ru.hse.software.restaurant.Server.schedulers.abstracts.OrderScheduler;
+import ru.hse.software.restaurant.Server.service.schedulers.abstracts.OrderScheduler;
 import ru.hse.software.restaurant.Server.view.entity.Order;
 import ru.hse.software.restaurant.Server.view.enums.OrderStatuses;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class ExecutionOrdersScheduler extends OrderScheduler implements Runnable {
@@ -15,7 +15,11 @@ public class ExecutionOrdersScheduler extends OrderScheduler implements Runnable
     @Override
     public void run() {
         if(acceptedOrders.size() < 5) {
-            updateOrdersCollection();
+            try {
+                updateOrdersCollection();
+            } catch (SQLException e) {
+                throw new RuntimeException();
+            }
         }
 
         int counter = 0;
@@ -26,19 +30,25 @@ public class ExecutionOrdersScheduler extends OrderScheduler implements Runnable
             if(order.getStatus() == OrderStatuses.ACCEPT) {
                 order.setStatus(OrderStatuses.PREPARE);
             }
-            if(order.getDifficult() <= 0) {
+            if(order.getDifficult() == 0) {
+                order.setDifficult(1);
                 order.setStatus(OrderStatuses.READY);
                 acceptedOrders.remove(order);
             }
 
             order.setDifficult(order.getDifficult() - 1);
-            orderRepository.update(order);
+            try {
+                orderRepository.update(order);
+            } catch (SQLException e) {
+                throw new RuntimeException();
+            }
+
             counter++;
         }
     }
 
     @Override
-    protected void updateOrdersCollection() {
+    protected void updateOrdersCollection() throws SQLException {
         LinkedList<Order> linkedListOrder = new LinkedList<>(orderRepository.getAllOrders());
 
         linkedListOrder.removeIf(order -> order.getStatus() == OrderStatuses.INACTIVE ||

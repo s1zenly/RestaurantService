@@ -5,19 +5,20 @@ import ru.hse.software.restaurant.Server.controller.AuthController;
 import ru.hse.software.restaurant.Server.view.dto.PersonaDTO;
 
 import java.sql.SQLException;
+import java.util.AbstractMap;
 
 
 public class AuthControllerClient {
     private final AuthController authController = new AuthController();
-    public void logIn() throws SQLException {
-
+    public AbstractMap.SimpleEntry<String, PersonaDTO> logIn(String email, String password) throws SQLException {
+        return authController.logIn(email, password);
     }
 
-    public void register() throws SQLException {
-
+    public boolean register(String email, String password) throws SQLException {
+        return authController.register(email, password);
     }
 
-    public void logout() throws SQLException {
-
+    public boolean logout(String email, String password) throws SQLException {
+        return authController.logOut(email, password);
     }
 }

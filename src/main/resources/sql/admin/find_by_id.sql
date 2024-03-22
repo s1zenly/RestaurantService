@@ -1,0 +1,1 @@
+SELECT * FROM admins WHERE id = ? LIMIT 1

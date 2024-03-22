@@ -11,4 +11,13 @@ public class DishDTO {
     private Integer price;
     private Integer difficult;
     private List<OrderDTO> orders;
+
+    @Override
+    public String toString() {
+        return """
+                title: %s
+                difficult: %s
+                price: %s
+                """.formatted(title, difficult, price);
+    }
 }

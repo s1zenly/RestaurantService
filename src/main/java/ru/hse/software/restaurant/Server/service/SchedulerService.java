@@ -1,7 +1,7 @@
 package ru.hse.software.restaurant.Server.service;
 
-import ru.hse.software.restaurant.Server.schedulers.CleanIlliquidOrdersScheduler;
-import ru.hse.software.restaurant.Server.schedulers.ExecutionOrdersScheduler;
+import ru.hse.software.restaurant.Server.service.schedulers.CleanIlliquidOrdersScheduler;
+import ru.hse.software.restaurant.Server.service.schedulers.ExecutionOrdersScheduler;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,8 +12,8 @@ public class SchedulerService {
     private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(count);
 
     public static void run() {
-        executorService.scheduleAtFixedRate(new ExecutionOrdersScheduler(), 0, 10, TimeUnit.MINUTES);
-        executorService.scheduleAtFixedRate(new CleanIlliquidOrdersScheduler(), 0, 1, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(new ExecutionOrdersScheduler(), 0, 1, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(new CleanIlliquidOrdersScheduler(), 0, 10, TimeUnit.SECONDS);
     }
 
     public static void exit() {

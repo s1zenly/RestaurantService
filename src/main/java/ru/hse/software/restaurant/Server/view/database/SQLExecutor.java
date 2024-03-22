@@ -16,6 +16,13 @@ public class SQLExecutor {
         statement.execute(sql);
     }
 
+    public static ResultSet executeSQLFileWithoutParamsWithReturn(Connection connection, String filepath) throws SQLException {
+        String sql = getReader(filepath).lines().collect(Collectors.joining("\n"));
+        Statement statement = connection.createStatement();
+
+        return statement.executeQuery(sql);
+    }
+
     public static void executeSQLFileWithParamsWithoutReturn
             (Connection connection, String filepath, Object... params) throws SQLException{
 

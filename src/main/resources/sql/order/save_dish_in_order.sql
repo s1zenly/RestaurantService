@@ -1,0 +1,1 @@
+INSERT INTO dishes_orders (order_id, dish_id) VALUES (?, ?)

@@ -11,14 +11,13 @@ import ru.hse.software.restaurant.Server.view.repository.UserRepository;
 import java.sql.SQLException;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class PaymentService {
-    private final UserRepository userRepository;
-    private final OrderRepository orderRepository;
+    private final UserRepository userRepository = new UserRepository();
+    private final OrderRepository orderRepository = new OrderRepository();
 
     public Integer paidForOrder(long userId, long orderId, int amount) throws SQLException {
         Order order = orderRepository.findById(orderId);
-        User user = (User) userRepository.findById(userId);
+        User user = userRepository.findById(userId);
         if(order.getStatus() != OrderStatuses.READY) {
             return null;
         }
@@ -27,17 +26,16 @@ public class PaymentService {
             return null;
         }
 
-        int remain = amount - order.getDifficult();
+        int remain = amount - order.getPrice();
         if(remain >= 0) {
             user.setMoneyAccount(user.getMoneyAccount() + remain);
-            order.setStatusPayment(PaymentStatusOrder.PAID);
-            orderRepository.update(order);
         } else {
-            user.setMoneyAccount(user.getMoneyAccount() - order.getDifficult());
+            user.setMoneyAccount(user.getMoneyAccount() + remain);
         }
 
 
-
+        order.setStatusPayment(PaymentStatusOrder.PAID);
+        orderRepository.update(order);
         userRepository.update(user);
 
         return remain;
@@ -46,18 +44,25 @@ public class PaymentService {
     public Integer paidAllOrder(long userId, int amount) throws SQLException {
         int remain = amount - getMoneyAccount(userId);
         if(remain >= 0) {
-            User user = (User) userRepository.findById(userId);
+            User user = userRepository.findById(userId);
 
             user.setMoneyAccount(user.getMoneyAccount() + remain);
 
             List<Order> orders = orderRepository.getAllOrdersByUserId(userId);
 
-            orders.forEach(order -> {
-                if(order.getStatusPayment() == PaymentStatusOrder.UNPAID) {
-                    order.setStatusPayment(PaymentStatusOrder.PAID);
-                    orderRepository.update(order);
-                }
-            });
+            if(orders != null) {
+                orders.forEach(order -> {
+                    if(order.getStatusPayment() == PaymentStatusOrder.UNPAID) {
+                        order.setStatusPayment(PaymentStatusOrder.PAID);
+                        try {
+                            orderRepository.update(order);
+                        } catch (SQLException e) {
+                            throw new RuntimeException();
+                        }
+                    }
+                });
+
+            }
 
             userRepository.update(user);
         }

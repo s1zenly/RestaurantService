@@ -1,18 +1,14 @@
 package ru.hse.software.restaurant.Server.service;
 
-import lombok.RequiredArgsConstructor;
 import ru.hse.software.restaurant.Server.view.dto.PersonaDTO;
-import ru.hse.software.restaurant.Server.view.dto.UserDTO;
 import ru.hse.software.restaurant.Server.view.entity.Admin;
 import ru.hse.software.restaurant.Server.view.entity.Persona;
 import ru.hse.software.restaurant.Server.view.entity.User;
 import ru.hse.software.restaurant.Server.view.mapper.mapperWithDependency.PersonaMapper;
 import ru.hse.software.restaurant.Server.view.repository.AdminRepository;
-import ru.hse.software.restaurant.Server.view.repository.PersonaRepository;
 import ru.hse.software.restaurant.Server.view.repository.UserRepository;
 
 import java.sql.SQLException;
-import java.util.Locale;
 
 public class AuthService {
 

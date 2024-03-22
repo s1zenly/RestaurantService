@@ -11,19 +11,22 @@ import ru.hse.software.restaurant.Server.view.mapper.mapperWithDependency.DishMa
 import ru.hse.software.restaurant.Server.view.repository.DishRepository;
 import ru.hse.software.restaurant.Server.view.repository.OrderRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.*;
 
-@RequiredArgsConstructor
 public class OrderService {
-    private final OrderRepository orderRepository;
-    private final DishRepository dishRepository;
+    private final OrderRepository orderRepository = new OrderRepository();
+    private final DishRepository dishRepository = new DishRepository();
 
-    public boolean addDishInOrder(long orderId, DishDTO dishDTO) {
-        Dish dish = DishMapper.INSTANCE.toEntity(dishDTO);
+    public boolean addDishInOrder(long orderId, String dishTitle) throws SQLException {
+        Dish dish = dishRepository.findByTitle(dishTitle);
+        if(dish == null) {
+            return false;
+        }
+
         Order order = orderRepository.findById(orderId);
 
-        if(order.getStatus() == OrderStatuses.READY) {
+        if(order.getStatus() == OrderStatuses.READY || order.getStatus() == OrderStatuses.PREPARE) {
             return false;
         }
 
@@ -31,16 +34,24 @@ public class OrderService {
         order.setPrice(order.getPrice() + dish.getPrice());
 
         orderRepository.update(order);
-        orderRepository.saveDishInOrder(orderId, dish.getId());
+        if(orderRepository.findCountDish(orderId, dish.getId()) < 1) {
+            orderRepository.saveDishInOrder(orderId, dish.getId());
+        }
+        orderRepository.updateCounter(orderId, dish.getId(), 1);
 
         return true;
     }
 
-    public boolean deleteDishInOrder(long orderId, DishDTO dishDTO) {
-        Dish dish = DishMapper.INSTANCE.toEntity(dishDTO);
+    public boolean deleteDishInOrder(long orderId, String dishTitle) throws SQLException {
+        Dish dish = dishRepository.findByTitle(dishTitle);
+
+        if(dish == null) {
+            return false;
+        }
+
         Order order = orderRepository.findById(orderId);
 
-        if(order.getStatus() == OrderStatuses.READY) {
+        if(order.getStatus() == OrderStatuses.READY || order.getStatus() == OrderStatuses.PREPARE) {
             return false;
         }
 
@@ -52,18 +63,25 @@ public class OrderService {
         order.setPrice(order.getPrice() - dish.getPrice());
 
         orderRepository.update(order);
-        orderRepository.deleteDishInOrder(orderId, dish.getId());
+        orderRepository.updateCounter(orderId, dish.getId(), -1);
+        if(orderRepository.findCountDish(orderId, dish.getId()) < 1) {
+            orderRepository.deleteDishInOrder(orderId, dish.getId());
+        }
 
         return true;
     }
 
-    public void createOrder(long userId) {
+    public void createOrder(long userId) throws SQLException {
         orderRepository.save(userId);
     }
 
-    public boolean makeAnOrder(long orderId) {
+    public boolean makeAnOrder(long orderId) throws SQLException {
         Order order = orderRepository.findById(orderId);
         if(order.getDishes().isEmpty()) {
+            return false;
+        }
+
+        if(order.getStatus() != OrderStatuses.INACTIVE) {
             return false;
         }
 
@@ -84,12 +102,39 @@ public class OrderService {
         return true;
     }
 
-    public Order infoAboutOrder(long orderId) {
-        return orderRepository.findById(orderId);
+    public AbstractMap.SimpleEntry<Order, Map<Dish, Integer>> infoAboutOrder(long orderId) throws SQLException {
+        Map<Dish, Integer> dishCount = new HashMap<>();
+        Order order =  orderRepository.findById(orderId);
+
+        if(order == null) {
+            return null;
+        }
+
+
+        List<Dish> dishes = order.getDishes();
+        for(Dish dish : dishes) {
+            dishCount.put(dish, getCountDish(orderId, dish.getId()));
+        }
+
+
+        return new AbstractMap.SimpleEntry<>(order, dishCount);
     }
 
-    public List<Order> infoAboutOrders(long userId) {
-        return orderRepository.getAllOrdersByUserId(userId);
+    public List<AbstractMap.SimpleEntry<Order, Map<Dish, Integer>>> infoAboutOrders(long userId) throws SQLException {
+        List<Order> orders = orderRepository.getAllOrdersByUserId(userId);
+        List<AbstractMap.SimpleEntry<Order, Map<Dish, Integer>>> result = new ArrayList<>();
+        if(orders == null) {
+            return null;
+        }
+
+        for(Order order : orders) {
+            result.add(infoAboutOrder(order.getId()));
+        }
+
+        return result;
     }
 
+    private Integer getCountDish(long orderId, long dishId) throws SQLException {
+        return orderRepository.findCountDish(orderId, dishId);
+    }
 }
