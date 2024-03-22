@@ -23,28 +23,32 @@ public class ExecutionOrdersScheduler extends OrderScheduler implements Runnable
         }
 
         int counter = 0;
-        Iterator<Order> iteratorOrders = acceptedOrders.iterator();
-        while(iteratorOrders.hasNext() && counter < countCook) {
-            Order order = iteratorOrders.next();
+        try {
 
-            if(order.getStatus() == OrderStatuses.ACCEPT) {
-                order.setStatus(OrderStatuses.PREPARE);
-            }
-            if(order.getDifficult() == 0) {
-                order.setDifficult(1);
-                order.setStatus(OrderStatuses.READY);
-                acceptedOrders.remove(order);
-            }
+            while(counter < acceptedOrders.size() && counter < countCook) {
+                Order order = acceptedOrders.get(counter);
 
-            order.setDifficult(order.getDifficult() - 1);
-            try {
-                orderRepository.update(order);
-            } catch (SQLException e) {
-                throw new RuntimeException();
-            }
+                if(order.getStatus() == OrderStatuses.ACCEPT) {
+                    order.setStatus(OrderStatuses.PREPARE);
+                }
+                if(order.getDifficult() == 0) {
+                    order.setDifficult(1);
+                    order.setStatus(OrderStatuses.READY);
+                }
 
-            counter++;
+                order.setDifficult(order.getDifficult() - 1);
+                try {
+                    orderRepository.update(order);
+                } catch (SQLException e) {
+                    throw new RuntimeException();
+                }
+
+                counter++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -57,6 +61,7 @@ public class ExecutionOrdersScheduler extends OrderScheduler implements Runnable
         linkedListOrder.sort(Comparator.comparing(Order::getStatus, statusesComparator)
                 .thenComparing(Order::getId));
 
+        acceptedOrders.clear();
         acceptedOrders.addAll(linkedListOrder);
     }
 
