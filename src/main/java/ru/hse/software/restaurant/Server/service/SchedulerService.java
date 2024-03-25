@@ -13,7 +13,7 @@ public class SchedulerService {
 
     public static void run() {
         executorService.scheduleAtFixedRate(new ExecutionOrdersScheduler(), 0, 1, TimeUnit.SECONDS);
-        executorService.scheduleAtFixedRate(new CleanIlliquidOrdersScheduler(), 0, 10, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(new CleanIlliquidOrdersScheduler(), 0, 10, TimeUnit.MINUTES);
     }
 
     public static void exit() {

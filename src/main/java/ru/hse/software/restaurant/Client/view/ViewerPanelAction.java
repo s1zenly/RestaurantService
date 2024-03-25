@@ -7,7 +7,6 @@ public class ViewerPanelAction {
                 Команды:
                 1 - авторизоваться
                 2 - зарегистрироваться
-                3 - показать табло заказов в RealTime
                 """);
     }
     public static void viewPanelActionUser() {

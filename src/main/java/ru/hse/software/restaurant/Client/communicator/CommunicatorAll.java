@@ -13,7 +13,7 @@ public class CommunicatorAll implements Communicator {
 
     private final Scanner scanner = new Scanner(System.in);
     private final AuthControllerClient authControllerClient = new AuthControllerClient();
-    private final int countCommand = 3;
+    private final int countCommand = 2;
 
     public void start() throws Exception {
 
@@ -66,10 +66,6 @@ public class CommunicatorAll implements Communicator {
                             }
                         }
                         break;
-                    }
-                    case 3: {
-                        System.out.println("Input any symbol for break");
-                        // будет поток и while(true)
                     }
                 }
             } catch (NumberFormatException e) {
